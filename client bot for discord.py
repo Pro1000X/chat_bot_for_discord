@@ -1,25 +1,22 @@
 import discord
 
+
+class MyClient(discord.Client):
+    async def on_ready(self):
+        print(f'Logged in as {self.user} (ID: {self.user.id})')
+        print('------')
+
+    async def on_message(self, message):
+        if message.content.startswith('!deleteme'):
+            msg = await message.channel.send('I will delete myself now...')
+            await msg.delete()
+
+            # this also works
+            await message.channel.send('Goodbye in 3 seconds...')
+            await message.channel.send("JK, i will not delete this message, WKWKWK")
+
 intents = discord.Intents.default()
 intents.message_content = True
 
-client = discord.Client(intents=intents)
-
-@client.event
-async def on_ready():
-    print(f'We have logged in as {client.user}')
-
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-    if message.content.startswith('$hello'):
-        await message.channel.send(f'Hi! I am a bot {client.user}!')
-    elif  message.content.startswith('/heh'):
-        if len(message.content) > 4:
-            count_heh = int(message.content[4:])
-        else:
-            count_heh = 5
-        await message.channel.send("he" * count_heh)
-        
+client = MyClient(intents=intents)
 client.run("ur token here")
